@@ -3,40 +3,42 @@
 from flask import Flask
 from flask import request
 
+from pyproj import Transformer
+
 app = Flask(__name__)
 
 @app.route("/")
 def index():
 
-    celsius = request.args.get("celsius", "")
+    epsg_orig = request.args.get("epsg_orig", "") #"EPSG:4326"
+    epsg_new = request.args.get("epsg_new", "") #"EPSG:3857"
+    northing = request.args.get("northing", "")
+    easting = request.args.get("easting", "")
 
-    if celsius:
-        fahrenheit = fahrenheit_from(celsius)
+    
+
+    if (epsg_orig and epsg_new and northing and easting):
+        transform = Transformer.from_crs(epsg_orig, epsg_new)
+        northing_new,easting_new = transform.transform(northing,easting)
 
     else:
-        fahrenheit = ""
+        northing_new = ""
+        easting_new = ""
 
     return (
-        """<form action="" method="get">
-                Celsius temperature: <input type="text" name="celsius">
-                <input type="submit" value="Convert to Fahrenheit">
+        """<form action="" method="get"><br>
+                EPSG original: <input type="text" name="epsg_orig"><br>
+                EPSG new: <input type="text" name="epsg_new"><br>
+                Northing: <input type="text" name="northing"><br>
+                Easting: <input type="text" name="easting"><br>
+                <input type="submit" value="Convert coordinates"><br>
             </form>"""
-        + "Fahrenheit: "
-        + fahrenheit
+        + "<br>Northing: "
+        + str(northing_new)
+        + "<br>Easting: "
+        + str(easting_new)
 
     )
-
-
-def fahrenheit_from(celsius):
-    """Convert Celsius to Fahrenheit degrees."""
-
-    try:
-        fahrenheit = float(celsius) * 9 / 5 + 32
-        fahrenheit = round(fahrenheit, 3)  # Round to three decimal places
-        return str(fahrenheit)
-
-    except ValueError:
-        return "invalid input"
 
 
 if __name__ == "__main__":
