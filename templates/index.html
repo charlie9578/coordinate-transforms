@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Coord Transforms</title>
+
+  {{ bootstrap.load_css() }}
+
+  <link rel="stylesheet" href="http://cdn.bokeh.org/bokeh/release/bokeh-3.3.4.min.css" type="text/css" />
+  <script type="text/javascript" src="http://cdn.bokeh.org/bokeh/release/bokeh-3.3.4.min.js"></script>
+  <script type="text/javascript">
+        Bokeh.set_log_level("info");
+  </script>
+  {{ bokeh_script|safe }}
+
+  <style>
+    body { background: #e8f1f9; }
+  </style>
+
+</head>
+<body>
+  <!-- this is a base template using Bootstrap-Flask
+       https://bootstrap-flask.readthedocs.io/ -->
+
+{% from 'bootstrap5/form.html' import render_form %}
+
+<!--
+	TIPS about using Bootstrap-Flask:
+	https://github.com/helloflask/bootstrap-flask
+	https://bootstrap-flask.readthedocs.io/
+-->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+      <h1 class="pt-5 pb-2">Coordinate transformations</h1>
+
+      <p class="lead">This form converts coordinates based on the ESPG list https://spatialreference.org/ref/epsg/ using Pyproj</p>
+
+      {{ render_form(form) }}
+
+      <p class="pt-5"><strong>{{ message }}</strong></p>
+
+      <p class="pt-5"><strong>{{ output }}</strong></p>
+
+      <div class='bokeh'>
+        {{ bokeh_div|safe }}
+      </div>
+     
+
+    </div>
+  </div>
+</div>
+
+<!-- you can delete the next line if you're not using any Bootstrap JS -->
+{{ bootstrap.load_js() }}
+</body>
+</html>

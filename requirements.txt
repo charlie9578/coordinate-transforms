@@ -3,3 +3,5 @@ Werkzeug==2.2.2
 pyproj
 flask-wtf
 bootstrap-flask
+pandas
+bokeh
