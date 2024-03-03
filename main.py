@@ -28,10 +28,10 @@ csrf = CSRFProtect(app)
 # "NameForm" can change; "(FlaskForm)" cannot
 # see the route for "/" and "index.html" to see how this is used
 class NameForm(FlaskForm):
-    epsg_orig = StringField("epsg_orig", "") #"EPSG:4326"
-    epsg_new = StringField("epsg_new", "") #"EPSG:3857"
-    northing = TextAreaField("northing", "")
-    easting = TextAreaField("easting", "")
+    epsg_orig = StringField("epsg_orig (e.g. EPSG:4326)", "") #"EPSG:4326"
+    epsg_new = StringField("epsg_new (e.g. EPSG:3857)", "") #"EPSG:3857"
+    northing = TextAreaField("northings", "")
+    easting = TextAreaField("eastings", "")
     submit = SubmitField('Submit')
 
 # list of EPSG valid coordinate transforms
@@ -114,7 +114,10 @@ def index():
     form = NameForm()
     
     message = ""
-    output = ""
+    northing_new = ""
+    easting_new = ""
+    script = ""
+    div = ""
 
     if form.validate_on_submit():
         epsg_orig = form.epsg_orig.data
@@ -134,9 +137,6 @@ def index():
 
                 lat,lon = transform_latlon.transform(northings,eastings)
                 northing_new,easting_new = transform_new.transform(northings,eastings)
-
-                output = f"Northings: {northing_new}, Eastings: {easting_new}"
-
                 
                 asset_df = pd.DataFrame.from_dict({"latitude":lat,"longitude":lon,
                                                    "old_northing":northings,"old_easting":eastings,
@@ -149,14 +149,21 @@ def index():
 
                 script, div = bokeh.embed.components(plot_coords)
 
+                message = "Coordinate transform succeeded."
+
             except:
                 message = "Coordinate transform failed."
-                message = northing
             
         else:
             message = "EPSG code is not in the database."
 
-    return render_template('index.html', form=form, message=message, output=output, bokeh_script=script, bokeh_div=div)
+    return render_template('index.html', 
+                        form=form,
+                        message=message,
+                        northings=northing_new,
+                        eastings=easting_new,
+                        bokeh_script=script,
+                        bokeh_div=div)
 
 # keep this as is
 if __name__ == '__main__':

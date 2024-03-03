@@ -42,9 +42,10 @@
 
       {{ render_form(form) }}
 
-      <p class="pt-5"><strong>{{ message }}</strong></p>
+      <p class="pt-5"><strong>Response: {{ message }}</strong></p>
 
-      <p class="pt-5"><strong>{{ output }}</strong></p>
+      <p class="pt-5"><strong>Northings: </strong> {{ northings }}</p>
+      <p class="pt-5"><strong>Eastings: </strong> {{ eastings }}</p>
 
       <div class='bokeh'>
         {{ bokeh_div|safe }}
